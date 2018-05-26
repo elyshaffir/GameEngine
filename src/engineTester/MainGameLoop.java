@@ -1,9 +1,12 @@
 package engineTester;
 
 import cameras.FreeCamera;
+import guis.GuiRenderer;
+import guis.GuiTexture;
 import models.RawModel;
 import models.TexturedModel;
 
+import normalMappingObjConverter.NormalMappedObjLoader;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -17,50 +20,120 @@ import terrain.Terrain;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
+import toolbox.CarryAround;
+import water.WaterTile;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainGameLoop {
+
+	private static List<Light> lights = new ArrayList<>();
+	private static List<Light> carryAroundLights = new ArrayList<>();
+	private static List<Terrain> terrainList = new ArrayList<>();
+	private static List<GuiTexture> guiTextureList = new ArrayList<>();
+	private static List<WaterTile> waterTiles = new ArrayList<>();
+	private static List<Entity> entities = new ArrayList<>();
+	private static List<Entity> normalMapEntities = new ArrayList<>();
+	private static List<Entity> carryAroundEntities = new ArrayList<>();
+
+	private static Loader loader;
+	private static MasterRenderer renderer;
+	private static GuiRenderer guiRenderer;
+
+	private static Entity dragon;
+
+	private static Entity barrel;
+
+	private static CarryAround carryAround;
+
+	private static FreeCamera camera = new FreeCamera(new Vector3f(100, 15, 100));
 
 	public static void main(String[] args) {					
 		
 		DisplayManager.createDisplay("", false);
-		Loader loader = new Loader();	
-		
-		RawModel model = OBJLoader.loadObjModel("models/dragon", loader);
 
+		loader = new Loader();
+		renderer = new MasterRenderer(loader);
+		guiRenderer = new GuiRenderer(loader);
+
+		createTerrain();
+		createWater();
+		createEntities();
+		createNormalMapEntities();
+		createLights();
+
+		boolean renderSkybox = true;
+
+		while (!Display.isCloseRequested()){				
+
+			dragon.increaseRotation(0, 1, 0);
+			barrel.increaseRotation(0, 0, 0);
+
+			camera.move();
+			// carryAround.update();
+
+			renderer.renderScene(camera, lights, entities, normalMapEntities, terrainList, waterTiles, renderSkybox);
+			guiRenderer.render(guiTextureList);
+			DisplayManager.updateDisplay();			
+		}
+		guiRenderer.cleanUp();
+		renderer.cleanUp();		
+		loader.cleanUp();
+		DisplayManager.closeDisplay();		
+	}
+
+	private static void createTerrain(){
 		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("terrain/grassy2"));
 		TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("terrain/mud"));
 		TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("terrain/raceEnding"));
 		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("terrain/path"));
-
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("terrain/raceblendMap"));
-
 		Terrain terrain = new Terrain(0, 0, loader, texturePack, blendMap);
+		terrainList.add(terrain);
+		carryAround = new CarryAround(camera, renderer.getProjectionMatrix(), terrain, carryAroundEntities, carryAroundLights);
+	}
 
-		TexturedModel staticModel = new TexturedModel(model, new ModelTexture(loader.loadTexture("textures/blankTexture")));
-		ModelTexture texture = staticModel.getTexture();
+	private static void createWater(){
+		WaterTile water = new WaterTile(150, 150, 0);
+		waterTiles.add(water);
+	}
+
+	private static void createEntities(){
+		RawModel dragonModel = OBJLoader.loadObjModel("models/dragon", loader);
+		TexturedModel dragonStaticModel = new TexturedModel(dragonModel, new ModelTexture(loader.loadTexture("textures/blankTexture")));
+		ModelTexture texture = dragonStaticModel.getTexture();
 		texture.setShineDamper(10);
 		texture.setReflectivity(10);
-		
-		Entity entity = new Entity(staticModel, new Vector3f(0, 0, -30), 0, 0, 0, 1);
-		Light light = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1));
-		
-		FreeCamera camera = new FreeCamera();
-		
-		MasterRenderer renderer = new MasterRenderer(loader);
-		
-		while (!Display.isCloseRequested()){				
-			entity.increaseRotation(0, 1, 0);
-			camera.move();
-			renderer.processTerrain(terrain);
-			renderer.processEntity(entity);
-			renderer.render(light, camera, false);
-			DisplayManager.updateDisplay();			
-		}
-		renderer.cleanUp();		
-		loader.cleanUp();
-		DisplayManager.closeDisplay();		
+		dragon = new Entity(dragonStaticModel, new Vector3f(130, 15, 130), 0, 0, 0, 1);
+		entities.add(dragon);
+		carryAroundEntities.add(dragon);
+	}
+
+	private static void createNormalMapEntities(){
+		RawModel barrelModel = NormalMappedObjLoader.loadObjModel("models/barrel", loader);
+		TexturedModel barrelStaticModel = new TexturedModel(barrelModel, new ModelTexture(loader.loadTexture("textures/barrel")));
+		barrelStaticModel.getTexture().setNormalID(loader.loadTexture("normalMaps/barrelNormal"));
+		ModelTexture texture = barrelStaticModel.getTexture();
+		texture.setShineDamper(10);
+		texture.setReflectivity(.5f);
+		barrel = new Entity(barrelStaticModel, new Vector3f(130, 15, 130), 0, 0, 0, 1);
+		normalMapEntities.add(barrel);
+	}
+
+	private static void createLights(){
+		Light sun = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1));
+		Light red = new Light(dragon.getPosition(), new Vector3f(10, 0, 0), new Vector3f(1, 0.01f, 0.002f));
+		Light green = new Light(dragon.getPosition(), new Vector3f(0, 10, 0), new Vector3f(1, 0.01f, 0.002f));
+		Light blue = new Light(dragon.getPosition(), new Vector3f(0, 0, 10), new Vector3f(1, 0.01f, 0.002f));
+		lights.add(sun);
+		lights.add(red);
+		lights.add(green);
+		lights.add(blue);
+		carryAroundLights.add(red);
+		carryAroundLights.add(green);
+		carryAroundLights.add(blue);
 	}
 
 }

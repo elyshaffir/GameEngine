@@ -29,6 +29,10 @@ public class Camera {
         this.position = position;
     }
 
+    public void invertPitch(){
+        pitch = -pitch;
+    }
+
     protected void setPitch(float pitch) {
         this.pitch = pitch;
         if (this.pitch > 360)

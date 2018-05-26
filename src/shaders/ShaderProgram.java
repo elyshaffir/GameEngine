@@ -9,8 +9,12 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 public abstract class ShaderProgram {
+
+	protected static final int MAX_LIGHTS = 4; // If changed, update terrain shaders and default shaders as well;
+	protected static final float LEVELS = 3f;
 
 	private int programID;
 	private int vertexShaderID;
@@ -26,7 +30,7 @@ public abstract class ShaderProgram {
 		GL20.glAttachShader(programID, vertexShaderID);
 		GL20.glAttachShader(programID, fragmentShaderID);
 		GL20.glLinkProgram(programID);
-		bindAttribute();
+		bindAttributes();
 		GL20.glLinkProgram(programID);
 		GL20.glValidateProgram(programID);
 		getAllUniformLocations();
@@ -55,9 +59,9 @@ public abstract class ShaderProgram {
 		GL20.glDeleteProgram(programID);
 	}
 	
-	protected abstract void bindAttribute();	
+	protected abstract void bindAttributes();
 	
-	protected void bindAttribute(int attribute, String variableName){
+	protected void bindAttributes(int attribute, String variableName){
 		GL20.glBindAttribLocation(programID, attribute, variableName);
 	}
 
@@ -66,13 +70,17 @@ public abstract class ShaderProgram {
 	protected void loadFloat(int location, float value){
 		GL20.glUniform1f(location, value);
 	}
-	
+
+	protected void load2DVector(int location, Vector2f vector){
+		GL20.glUniform2f(location, vector.x, vector.y);
+	}
+
 	protected void loadVector(int location, Vector3f vector){
 		GL20.glUniform3f(location, vector.x, vector.y, vector.z);
 	}
 
-	protected void load2DVector(int location, Vector2f vector){
-		GL20.glUniform2f(location, vector.x, vector.y);
+	protected void load4DVector(int location, Vector4f vector){
+		GL20.glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
 	
 	protected void loadBoolean(int location, boolean value){

@@ -23,9 +23,9 @@ public class FontShader extends ShaderProgram{
 	}
 
 	@Override
-	protected void bindAttribute() {
-		super.bindAttribute(0, "position");
-		super.bindAttribute(1, "textureCoords");
+	protected void bindAttributes() {
+		super.bindAttributes(0, "position");
+		super.bindAttributes(1, "textureCoords");
 	}
 
 	protected void loadColor(Vector3f color){
