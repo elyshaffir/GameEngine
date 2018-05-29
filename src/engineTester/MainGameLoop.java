@@ -1,17 +1,22 @@
 package engineTester;
 
 import cameras.FreeCamera;
+import fontMeshCreator.GUIText;
 import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.RawModel;
 import models.TexturedModel;
 
 import normalMappingObjConverter.NormalMappedObjLoader;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.Entity;
 import entities.Light;
+import postProcessing.Fbo;
+import postProcessing.PostProcessing;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
@@ -54,18 +59,22 @@ public class MainGameLoop {
 		DisplayManager.createDisplay("", false);
 
 		loader = new Loader();
-		renderer = new MasterRenderer(loader);
+		renderer = new MasterRenderer(loader, camera);
 		guiRenderer = new GuiRenderer(loader);
 
+		// createGUIs();
 		createTerrain();
 		createWater();
 		createEntities();
 		createNormalMapEntities();
 		createLights();
 
-		boolean renderSkybox = true;
+		boolean renderSkybox = false;
 
-		while (!Display.isCloseRequested()){				
+		Fbo fbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
+		PostProcessing.init(loader);
+
+		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 			dragon.increaseRotation(0, 1, 0);
 			barrel.increaseRotation(0, 0, 0);
@@ -73,10 +82,16 @@ public class MainGameLoop {
 			camera.move();
 			// carryAround.update();
 
-			renderer.renderScene(camera, lights, entities, normalMapEntities, terrainList, waterTiles, renderSkybox);
+			renderer.renderShadowMap(entities, lights.get(0));
+			renderer.renderScene(camera, lights, entities, normalMapEntities, terrainList, waterTiles, fbo, renderSkybox);
+
+			PostProcessing.doPostProcessing(fbo.getColourTexture());
+
 			guiRenderer.render(guiTextureList);
 			DisplayManager.updateDisplay();			
 		}
+		PostProcessing.cleanUp();
+		fbo.cleanUp();
 		guiRenderer.cleanUp();
 		renderer.cleanUp();		
 		loader.cleanUp();
@@ -95,6 +110,11 @@ public class MainGameLoop {
 		carryAround = new CarryAround(camera, renderer.getProjectionMatrix(), terrain, carryAroundEntities, carryAroundLights);
 	}
 
+	private static void createGUIs(){
+		GuiTexture shadowMap = new GuiTexture(renderer.getShadowMapTexture(), new Vector2f(.5f, .5f), new Vector2f(.5f, .5f));
+		guiTextureList.add(shadowMap);
+	}
+
 	private static void createWater(){
 		WaterTile water = new WaterTile(150, 150, 0);
 		waterTiles.add(water);
@@ -106,9 +126,8 @@ public class MainGameLoop {
 		ModelTexture texture = dragonStaticModel.getTexture();
 		texture.setShineDamper(10);
 		texture.setReflectivity(10);
-		dragon = new Entity(dragonStaticModel, new Vector3f(130, 15, 130), 0, 0, 0, 1);
+		dragon = new Entity(dragonStaticModel, new Vector3f(130, 30, 130), 0, 0, 0, 1);
 		entities.add(dragon);
-		carryAroundEntities.add(dragon);
 	}
 
 	private static void createNormalMapEntities(){
@@ -118,12 +137,13 @@ public class MainGameLoop {
 		ModelTexture texture = barrelStaticModel.getTexture();
 		texture.setShineDamper(10);
 		texture.setReflectivity(.5f);
-		barrel = new Entity(barrelStaticModel, new Vector3f(130, 15, 130), 0, 0, 0, 1);
+		barrel = new Entity(barrelStaticModel, new Vector3f(150, 30, 150), 0, 0, 0, 1);
 		normalMapEntities.add(barrel);
+		carryAroundEntities.add(barrel);
 	}
 
 	private static void createLights(){
-		Light sun = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1));
+		Light sun = new Light(new Vector3f(1000000, 1500000, -1000000), new Vector3f(1.3f, 1.3f, 1.3f));
 		Light red = new Light(dragon.getPosition(), new Vector3f(10, 0, 0), new Vector3f(1, 0.01f, 0.002f));
 		Light green = new Light(dragon.getPosition(), new Vector3f(0, 10, 0), new Vector3f(1, 0.01f, 0.002f));
 		Light blue = new Light(dragon.getPosition(), new Vector3f(0, 0, 10), new Vector3f(1, 0.01f, 0.002f));

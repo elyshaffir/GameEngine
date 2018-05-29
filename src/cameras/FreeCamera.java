@@ -8,7 +8,7 @@ import renderEngine.DisplayManager;
 
 public class FreeCamera extends Camera{
 
-    private static final float MOVE_SPEED = 200;
+    private static final float MOVE_SPEED = 150;
     private int mouseButton = 0;
 
     private float currentSpeed;

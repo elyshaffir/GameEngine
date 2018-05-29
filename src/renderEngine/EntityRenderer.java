@@ -25,6 +25,7 @@ class EntityRenderer {
 		this.shader = shader;
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
+		shader.connectTextureUnits();
 		shader.stop();
 	}
 	
@@ -34,7 +35,8 @@ class EntityRenderer {
 		GL11.glClearColor(1, 0, 0, 1);		
 	}
 	
-	void render(Map<TexturedModel, List<Entity>> entities){
+	void render(Map<TexturedModel, List<Entity>> entities, Matrix4f toShadowSpace){
+		shader.loadToShadowSpaceMatrix(toShadowSpace);
 		for (TexturedModel model:entities.keySet()){
 			prepareTexturedModel(model);
 			List<Entity> batch = entities.get(model);

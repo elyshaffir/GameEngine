@@ -25,6 +25,9 @@ public class WaterShader extends ShaderProgram {
 	private int location_depthMap;
 	private int location_nearPlane;
 	private int location_farPlane;
+	private int location_waveStrength;
+	private int location_shineDamper;
+	private int location_reflectivity;
 
 	public WaterShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -51,6 +54,15 @@ public class WaterShader extends ShaderProgram {
 		location_depthMap = getUniformLocation("depthMap");
 		location_nearPlane = getUniformLocation("nearPlane");
 		location_farPlane = getUniformLocation("farPlane");
+		location_waveStrength = getUniformLocation("waveStrength");
+		location_shineDamper = getUniformLocation("shineDamper");
+		location_reflectivity = getUniformLocation("reflectivity");
+	}
+
+	public void loadWaterVariables(float waveStrength, float shineDamper, float reflectivity){
+		super.loadFloat(location_waveStrength, waveStrength);
+		super.loadFloat(location_shineDamper, shineDamper);
+		super.loadFloat(location_reflectivity, reflectivity);
 	}
 
 	public void connectTextureUnits(){

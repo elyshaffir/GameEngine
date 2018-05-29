@@ -19,9 +19,9 @@ uniform float moveFactor;
 uniform float nearPlane;
 uniform float farPlane;
 
-const float waveStrength = 0.04;
-const float shineDamper = 20.0;
-const float reflectivity = 0.5;
+uniform float waveStrength;
+uniform float shineDamper;
+uniform float reflectivity;
 
 void main(void) {
 

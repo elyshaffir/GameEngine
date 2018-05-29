@@ -32,6 +32,12 @@ public class StaticShader extends ShaderProgram{
 	private int location_useFakeLighting;
 	private int location_numberOfRows;
 	private int location_offset;
+	private int location_toShadowMapSpace;
+	private int location_shadowMap;
+	private int location_shadowDistance;
+	private int location_transitionDistance;
+	private int location_pcfCount;
+	private int location_mapSize;
 
 	public StaticShader() {		
 		super(VERTEX_FILE, FRAGMENT_FILE);		
@@ -69,6 +75,27 @@ public class StaticShader extends ShaderProgram{
 		location_useFakeLighting = super.getUniformLocation("useFakeLighting");
 		location_numberOfRows = super.getUniformLocation("numberOfRows");
 		location_offset = super.getUniformLocation("offset");
+		location_toShadowMapSpace = super.getUniformLocation("toShadowMapSpace");
+		location_shadowMap = super.getUniformLocation("shadowMap");
+		location_shadowDistance = super.getUniformLocation("shadowDistance");
+		location_transitionDistance = super.getUniformLocation("transitionDistance");
+		location_pcfCount = super.getUniformLocation("pcfCount");
+		location_mapSize = super.getUniformLocation("mapSize");
+	}
+
+	public void loadShadowVariables(float shadowDistance, float transitionDistance, int pcfCount, float mapSize){
+		super.loadFloat(location_shadowDistance, shadowDistance);
+		super.loadFloat(location_transitionDistance, transitionDistance);
+		super.loadInt(location_pcfCount, pcfCount);
+		super.loadFloat(location_mapSize, mapSize);
+	}
+
+	public void connectTextureUnits(){
+		super.loadInt(location_shadowMap, 5);
+	}
+
+	public void loadToShadowSpaceMatrix(Matrix4f matrix){
+		super.loadMatrix(location_toShadowMapSpace, matrix);
 	}
 
 	public void loadNumberOfRows(int numberOfRows){

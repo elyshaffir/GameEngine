@@ -13,6 +13,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
+import renderEngine.MasterRenderer;
 import toolbox.Maths;
 import entities.Camera;
 import entities.Light;
@@ -21,7 +22,11 @@ public class WaterRenderer {
 
 	private static final String DUDV_MAP = "water/waterDUDV";
 	private static final String NORMAL_MAP = "water/normalMap";
-	private static final float WAVE_SPEED = 0.03f;
+
+	private static final float WAVE_SPEED = 0.02f;
+	private static final float WAVE_STRENGTH = 0.04f;
+	private static final float SHINE_DAMPER = 20;
+	private static final float REFLECTIVITY = 0.5f;
 
 	private RawModel quad;
 	private WaterShader shader;
@@ -46,11 +51,15 @@ public class WaterRenderer {
 	public void render(List<WaterTile> water, Camera camera, Light light, float nearPlane, float farPlane) {
 		prepareRender(camera, light, nearPlane, farPlane);
 		for (WaterTile tile : water) {
+			if (camera.getPosition().y < tile.getHeight())
+				MasterRenderer.disableCulling();
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(
 					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
 					WaterTile.TILE_SIZE);
 			shader.loadModelMatrix(modelMatrix);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
+			if (camera.getPosition().y < tile.getHeight())
+				MasterRenderer.enableCulling();
 		}
 		unbind();
 	}
@@ -63,6 +72,7 @@ public class WaterRenderer {
 		shader.loadMoveFactor(moveFactor);
 		shader.loadLight(light);
 		shader.loadNearFarPlanes(nearPlane, farPlane);
+		shader.loadWaterVariables(WAVE_STRENGTH, SHINE_DAMPER, REFLECTIVITY);
 		GL30.glBindVertexArray(quad.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);

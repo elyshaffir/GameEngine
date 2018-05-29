@@ -2,11 +2,8 @@ package renderEngine;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
-import org.lwjgl.opengl.ContextAttribs;
-import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.PixelFormat;
 
 import java.awt.*;
 
@@ -27,8 +24,9 @@ public class DisplayManager {
 				Display.setDisplayMode(new DisplayMode(width, height));
 			else
 				Display.setFullscreen(fullScreen);
-			Display.create(new PixelFormat(), attribs);
+			Display.create(new PixelFormat().withSamples(8).withDepthBits(24), attribs);
 			Display.setTitle(title);
+			GL11.glEnable(GL13.GL_MULTISAMPLE);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
