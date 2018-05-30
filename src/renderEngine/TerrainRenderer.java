@@ -47,8 +47,14 @@ public class TerrainRenderer {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getgTexture().getTextureID());
         GL13.glActiveTexture(GL13.GL_TEXTURE3);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getbTexture().getTextureID());
-        GL13.glActiveTexture(GL13.GL_TEXTURE4);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, terrain.getBlendMap().getTextureID());
+        if (terrain.getBlendMap() != null){
+            GL13.glActiveTexture(GL13.GL_TEXTURE4);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, terrain.getBlendMap().getTextureID());
+        }
+        if (terrain.getHeightMap() != null){
+            GL13.glActiveTexture(GL13.GL_TEXTURE6);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, terrain.getHeightMap().getTextureID());
+        }
     }
 
     private void unbindTexturedModel(){

@@ -4,8 +4,8 @@ import shaders.ShaderProgram;
 
 public class ContrastShader extends ShaderProgram {
 
-	private static final String VERTEX_FILE = "/postProcessing/postProcessingVertex.txt";
-	private static final String FRAGMENT_FILE = "/postProcessing/contrastFragment.txt";
+	private static final String VERTEX_FILE = "/postProcessing/postProcessingVertex.glsl";
+	private static final String FRAGMENT_FILE = "/postProcessing/contrastFragment.glsl";
 
 	private int location_contrast;
 	

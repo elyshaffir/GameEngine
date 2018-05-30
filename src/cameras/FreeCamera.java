@@ -62,9 +62,9 @@ public class FreeCamera extends Camera{
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-            super.setPosition(new Vector3f(super.getPosition().x, super.getPosition().y + MOVE_SPEED / 450, super.getPosition().z));
+            super.setPosition(new Vector3f(super.getPosition().x, super.getPosition().y + MOVE_SPEED / 100, super.getPosition().z));
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-            super.setPosition(new Vector3f(super.getPosition().x, super.getPosition().y - MOVE_SPEED / 450, super.getPosition().z));
+            super.setPosition(new Vector3f(super.getPosition().x, super.getPosition().y - MOVE_SPEED / 100, super.getPosition().z));
 
     }
 

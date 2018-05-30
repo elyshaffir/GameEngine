@@ -19,7 +19,6 @@ import org.lwjgl.util.vector.Vector4f;
 import postProcessing.Fbo;
 import shaders.StaticShader;
 import shadows.ShadowBox;
-import shadows.ShadowMapEntityRenderer;
 import shadows.ShadowMapMasterRenderer;
 import terrain.TerrainShader;
 import skybox.SkyboxRenderer;
@@ -86,7 +85,7 @@ public class MasterRenderer {
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
 
-	public void render(List<Light> lights, Camera camera, Vector4f clipPlane, boolean renderSkybox){
+	public void render(List<Light> lights, Camera camera, Vector4f clipPlane, boolean renderSkybox, boolean colorOfHeights){
 		prepare();
 
 		shader.start();
@@ -104,6 +103,7 @@ public class MasterRenderer {
 
 
 		terrainShader.start();
+		terrainShader.loadColorOfHeights(colorOfHeights);
 		terrainShader.loadShadowVariables(ShadowBox.SHADOW_DISTANCE, ShadowMapMasterRenderer.TRANSITION_DISTANCE, ShadowMapMasterRenderer.PCF_COUNT, ShadowMapMasterRenderer.SHADOW_MAP_SIZE);
 		terrainShader.loadClipPlane(clipPlane);
 		terrainShader.loadSkyColor(RED, GREEN, BLUE);
@@ -112,9 +112,9 @@ public class MasterRenderer {
 		terrainShader.loadLevels();
 		terrainShader.loadViewMatrix(camera);
 		terrainRenderer.render(terrainList, shadowMapMasterRenderer.getToShadowMapSpaceMatrix());
-		terrainShader.stop();
 
 		waterShader.start();
+		terrainShader.stop();
 		waterShader.loadViewMatrix(camera);
 		waterRenderer.render(waterTiles, camera, lights.get(0), NEAR_PLANE, FAR_PLANE);
 		waterShader.stop();
@@ -137,7 +137,7 @@ public class MasterRenderer {
 			processTerrain(terrain);
 	}
 
-	private void prepareWaterProcessing(Camera camera, List<Terrain> terrainList, List<Entity> entities, List<Entity> normalMapEntities, List<Light> lights, List<WaterTile> waterTiles, boolean renderSkybox){
+	private void prepareWaterProcessing(Camera camera, List<Terrain> terrainList, List<Entity> entities, List<Entity> normalMapEntities, List<Light> lights, List<WaterTile> waterTiles, boolean renderSkybox, boolean colorOfHeights){
 		GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
 		for (WaterTile water:waterTiles){
@@ -167,7 +167,7 @@ public class MasterRenderer {
 			processEntities(entities);
 			processNormalMapEntities(normalMapEntities);
 
-			render(lights, camera, clipPlaneReflection, renderSkybox);
+			render(lights, camera, clipPlaneReflection, renderSkybox, colorOfHeights);
 
 			if (!underWater) {
 				camera.getPosition().y += distance;
@@ -180,7 +180,7 @@ public class MasterRenderer {
 			processTerrains(terrainList);
 			processEntities(entities);
 			processNormalMapEntities(normalMapEntities);
-			render(lights, camera, clipPlaneRefraction, renderSkybox);
+			render(lights, camera, clipPlaneRefraction, renderSkybox, colorOfHeights);
 			waterFrameBuffers.unbindCurrentFrameBuffer();
 		}
 
@@ -277,15 +277,15 @@ public class MasterRenderer {
 		return projectionMatrix;
 	}
 
-	public void renderScene(Camera camera, List<Light> lights, List<Entity> entities, List<Entity> normalMapEntities, List<Terrain> terrainList, List<WaterTile> waterTiles, Fbo fbo, boolean renderSkybox){
-		prepareWaterProcessing(camera, terrainList, entities, normalMapEntities, lights, waterTiles, renderSkybox);
+	public void renderScene(Camera camera, List<Light> lights, List<Entity> entities, List<Entity> normalMapEntities, List<Terrain> terrainList, List<WaterTile> waterTiles, Fbo fbo, boolean renderSkybox, boolean colorOfHeights){
+		prepareWaterProcessing(camera, terrainList, entities, normalMapEntities, lights, waterTiles, renderSkybox, colorOfHeights);
 
 		fbo.bindFrameBuffer();
 		processWaters(waterTiles);
 		processTerrains(terrainList);
 		processEntities(entities);
 		processNormalMapEntities(normalMapEntities);
-		render(lights, camera, new Vector4f(0, -1, 0, 100000), renderSkybox);
+		render(lights, camera, new Vector4f(0, -1, 0, 100000), renderSkybox, colorOfHeights);
 		fbo.unbindFrameBuffer();
 	}
 

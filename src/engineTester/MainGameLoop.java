@@ -70,6 +70,7 @@ public class MainGameLoop {
 		createLights();
 
 		boolean renderSkybox = false;
+		boolean colorOfHeights = terrainList.get(0).getBlendMap() == null;
 
 		Fbo fbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
 		PostProcessing.init(loader);
@@ -77,13 +78,12 @@ public class MainGameLoop {
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 			dragon.increaseRotation(0, 1, 0);
-			barrel.increaseRotation(0, 0, 0);
 
 			camera.move();
 			// carryAround.update();
 
 			renderer.renderShadowMap(entities, lights.get(0));
-			renderer.renderScene(camera, lights, entities, normalMapEntities, terrainList, waterTiles, fbo, renderSkybox);
+			renderer.renderScene(camera, lights, entities, normalMapEntities, terrainList, waterTiles, fbo, renderSkybox, colorOfHeights);
 
 			PostProcessing.doPostProcessing(fbo.getColourTexture());
 
@@ -100,12 +100,12 @@ public class MainGameLoop {
 
 	private static void createTerrain(){
 		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("terrain/grassy2"));
-		TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("terrain/mud"));
-		TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("terrain/raceEnding"));
-		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("terrain/path"));
+		TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("terrain/highest"));
+		TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("terrain/rockTerrain"));
+		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("terrain/lowest"));
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("terrain/raceblendMap"));
-		Terrain terrain = new Terrain(0, 0, loader, texturePack, blendMap);
+		Terrain terrain = new Terrain(0, 0, loader, texturePack,"terrain/colorOfHeightTestHeightMap");
 		terrainList.add(terrain);
 		carryAround = new CarryAround(camera, renderer.getProjectionMatrix(), terrain, carryAroundEntities, carryAroundLights);
 	}
@@ -128,6 +128,7 @@ public class MainGameLoop {
 		texture.setReflectivity(10);
 		dragon = new Entity(dragonStaticModel, new Vector3f(130, 30, 130), 0, 0, 0, 1);
 		entities.add(dragon);
+		carryAroundEntities.add(dragon);
 	}
 
 	private static void createNormalMapEntities(){
@@ -139,7 +140,6 @@ public class MainGameLoop {
 		texture.setReflectivity(.5f);
 		barrel = new Entity(barrelStaticModel, new Vector3f(150, 30, 150), 0, 0, 0, 1);
 		normalMapEntities.add(barrel);
-		carryAroundEntities.add(barrel);
 	}
 
 	private static void createLights(){

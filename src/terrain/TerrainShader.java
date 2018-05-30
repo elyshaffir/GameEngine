@@ -13,8 +13,8 @@ import java.util.List;
 
 public class TerrainShader extends ShaderProgram {
 
-    private static final String VERTEX_FILE = "/terrain/terrainVertexShader.txt";
-    private static final String FRAGMENT_FILE = "/terrain/terrainFragmentShader.txt";
+    private static final String VERTEX_FILE = "/terrain/terrainVertexShader.glsl";
+    private static final String FRAGMENT_FILE = "/terrain/terrainFragmentShader.glsl";
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;
@@ -40,6 +40,8 @@ public class TerrainShader extends ShaderProgram {
     private int location_transitionDistance;
     private int location_pcfCount;
     private int location_mapSize;
+    private int location_heightMap;
+    private int location_colorOfHeights;
 
     public TerrainShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -85,6 +87,12 @@ public class TerrainShader extends ShaderProgram {
         location_transitionDistance = super.getUniformLocation("transitionDistance");
         location_pcfCount = super.getUniformLocation("pcfCount");
         location_mapSize = super.getUniformLocation("mapSize");
+        location_heightMap = super.getUniformLocation("heightMap");
+        location_colorOfHeights = super.getUniformLocation("colorOfHeights");
+    }
+
+    public void loadColorOfHeights(boolean colorOfHeights){
+        super.loadBoolean(location_colorOfHeights, colorOfHeights);
     }
 
     public void loadShadowVariables(float shadowDistance, float transitionDistance, int pcfCount, float mapSize){
@@ -118,6 +126,7 @@ public class TerrainShader extends ShaderProgram {
         super.loadInt(location_bTexture, 3);
         super.loadInt(location_blendMap, 4);
         super.loadInt(location_shadowMap, 5);
+        super.loadInt(location_heightMap, 6);
     }
 
     public void loadShineVariables(float damper, float reflectivity){

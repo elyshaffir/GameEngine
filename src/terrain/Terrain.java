@@ -27,8 +27,11 @@ public class Terrain {
     private RawModel model;
     private TerrainTexturePack texturePack;
     private TerrainTexture blendMap;
+    private TerrainTexture heightMap;
 
     private float[][] heights;
+
+    private boolean colorOfHeights = false;
 
     public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap, String heightMap) {
         this.x = gridX * SIZE;
@@ -36,7 +39,7 @@ public class Terrain {
         this.model = generateTerrain(loader, heightMap);
         this.texturePack = texturePack;
         this.blendMap = blendMap;
-
+        this.heightMap = new TerrainTexture(loader.loadTexture(heightMap));
     }
 
     public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap){
@@ -45,6 +48,23 @@ public class Terrain {
         this.model = generateRandomTerrain(loader);
         this.texturePack = texturePack;
         this.blendMap = blendMap;
+    }
+
+    public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack){
+        this.x = gridX * SIZE;
+        this.z = gridZ * SIZE;
+        this.model = generateRandomTerrain(loader);
+        this.texturePack = texturePack;
+        this.colorOfHeights = true;
+    }
+
+    public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, String heightMap){
+        this.x = gridX * SIZE;
+        this.z = gridZ * SIZE;
+        this.model = generateTerrain(loader, heightMap);
+        this.texturePack = texturePack;
+        this.heightMap = new TerrainTexture(loader.loadTexture(heightMap));
+        this.colorOfHeights = true;
     }
 
     public float getHeightOfTerrain(float worldX, float worldZ){
@@ -224,4 +244,11 @@ public class Terrain {
         return blendMap;
     }
 
+    public TerrainTexture getHeightMap() {
+        return heightMap;
+    }
+
+    public boolean isColorOfHeights() {
+        return colorOfHeights;
+    }
 }

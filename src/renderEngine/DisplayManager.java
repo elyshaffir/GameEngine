@@ -9,8 +9,8 @@ import java.awt.*;
 
 public class DisplayManager {
 
-	private static int width = 820;
-	private static int height = 640;
+	private static int width = 1366;
+	private static int height = 768;
 	private static final int FPS_CAP = 120;
 
 	private static long lastFrameTime;
