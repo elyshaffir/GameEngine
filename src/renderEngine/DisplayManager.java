@@ -4,14 +4,9 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
-
-import java.awt.*;
+import settings.DisplaySettings;
 
 public class DisplayManager {
-
-	private static int width = 1366;
-	private static int height = 768;
-	private static final int FPS_CAP = 120;
 
 	private static long lastFrameTime;
 	private static float delta;
@@ -21,7 +16,7 @@ public class DisplayManager {
 		
 		try {
 			if (!fullScreen)
-				Display.setDisplayMode(new DisplayMode(width, height));
+				Display.setDisplayMode(new DisplayMode(DisplaySettings.WIDTH, DisplaySettings.HEIGHT));
 			else
 				Display.setFullscreen(fullScreen);
 			Display.create(new PixelFormat().withSamples(8).withDepthBits(24), attribs);
@@ -32,12 +27,12 @@ public class DisplayManager {
 		}
 
 		if (!fullScreen)
-			GL11.glViewport(0, 0, width, height);
+			GL11.glViewport(0, 0, DisplaySettings.WIDTH, DisplaySettings.HEIGHT);
 		lastFrameTime = getCurrentTime();
 	}
 	
 	public static void updateDisplay(){		
-		Display.sync(FPS_CAP);
+		Display.sync(DisplaySettings.FPS_CAP);
 		Display.update();
 		long currentFrameTime = getCurrentTime();
 		delta = (currentFrameTime - lastFrameTime) / 1000f;
@@ -54,21 +49,5 @@ public class DisplayManager {
 
 	private static long getCurrentTime(){
 		return Sys.getTime() * 1000 / Sys.getTimerResolution();
-	}
-
-	public static int getWidth() {
-		return width;
-	}
-
-	public static void setWidth(int width) {
-		DisplayManager.width = width;
-	}
-
-	public static int getHeight() {
-		return height;
-	}
-
-	public static void setHeight(int height) {
-		DisplayManager.height = height;
 	}
 }

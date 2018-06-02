@@ -1,19 +1,19 @@
 package skybox;
 
-import entities.Camera;
+import cameras.Camera;
 import org.lwjgl.util.vector.Matrix4f;
 
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
+import settings.RenderSettings;
+import settings.SkyboxSettings;
 import shaders.ShaderProgram;
 import toolbox.Maths;
 
 public class SkyboxShader extends ShaderProgram{
 
-	private static final String VERTEX_FILE = "/skybox/skyboxVertexShader.txt";
-	private static final String FRAGMENT_FILE = "/skybox/skyboxFragmentShader.txt";
-
-	private static final float ROTATE_SPEED = 1f;
+	private static final String VERTEX_FILE = "/skybox/skyboxVertexShader.glsl";
+	private static final String FRAGMENT_FILE = "/skybox/skyboxFragmentShader.glsl";
 
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
@@ -38,7 +38,7 @@ public class SkyboxShader extends ShaderProgram{
 		matrix.m30 = 0;
 		matrix.m31 = 0;
         matrix.m32 = 0;
-        rotation += ROTATE_SPEED * DisplayManager.getFrameTimeSeconds();
+        rotation += SkyboxSettings.ROTATE_SPEED * DisplayManager.getFrameTimeSeconds();
         Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0, 1, 0), matrix, matrix);
 		super.loadMatrix(location_viewMatrix, matrix);
 	}
@@ -57,7 +57,7 @@ public class SkyboxShader extends ShaderProgram{
 	}
 
 	public void loadLevels(){
-		super.loadFloat(location_levels, LEVELS);
+		super.loadFloat(location_levels, RenderSettings.LEVELS);
 	}
 
 	@Override

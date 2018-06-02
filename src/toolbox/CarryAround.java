@@ -1,8 +1,8 @@
 package toolbox;
 
-import entities.Camera;
+import cameras.Camera;
 import entities.Entity;
-import entities.Light;
+import lights.Light;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import terrain.Terrain;

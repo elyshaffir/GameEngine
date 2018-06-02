@@ -8,10 +8,11 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import entities.Camera;
+import cameras.Camera;
 import entities.Entity;
-import entities.Light;
+import lights.Light;
 import models.TexturedModel;
+import settings.ShadowSettings;
 
 /**
  * This class is in charge of using all of the classes in the shadows package to
@@ -23,11 +24,6 @@ import models.TexturedModel;
  *
  */
 public class ShadowMapMasterRenderer {
-
-	public static final int SHADOW_MAP_SIZE = 4096;
-	public static final int PCF_COUNT = 2;
-
-	public static final float TRANSITION_DISTANCE = 10f;
 
 	private ShadowFrameBuffer shadowFbo;
 	private ShadowShader shader;
@@ -53,7 +49,7 @@ public class ShadowMapMasterRenderer {
 	public ShadowMapMasterRenderer(Camera camera) {
 		shader = new ShadowShader();
 		shadowBox = new ShadowBox(lightViewMatrix, camera);
-		shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
+		shadowFbo = new ShadowFrameBuffer(ShadowSettings.SHADOW_MAP_SIZE, ShadowSettings.SHADOW_MAP_SIZE);
 		entityRenderer = new ShadowMapEntityRenderer(shader, projectionViewMatrix);
 	}
 

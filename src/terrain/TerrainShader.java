@@ -1,11 +1,12 @@
 package terrain;
 
 
-import entities.Camera;
-import entities.Light;
+import cameras.Camera;
+import lights.Light;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
+import settings.RenderSettings;
 import shaders.ShaderProgram;
 import toolbox.Maths;
 
@@ -71,10 +72,10 @@ public class TerrainShader extends ShaderProgram {
         location_skyColor = super.getUniformLocation("skyColor");
         location_plane = super.getUniformLocation("plane");
 
-        location_lightPosition = new int[MAX_LIGHTS];
-        location_lightColor = new int[MAX_LIGHTS];
-        location_attenuation = new int[MAX_LIGHTS];
-        for (int i = 0; i < MAX_LIGHTS; i++){
+        location_lightPosition = new int[RenderSettings.MAX_LIGHTS];
+        location_lightColor = new int[RenderSettings.MAX_LIGHTS];
+        location_attenuation = new int[RenderSettings.MAX_LIGHTS];
+        for (int i = 0; i < RenderSettings.MAX_LIGHTS; i++){
             location_lightPosition[i] = super.getUniformLocation("lightPosition[" + i + "]");
             location_lightColor[i] = super.getUniformLocation("lightColor[" + i + "]");
             location_attenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
@@ -139,11 +140,11 @@ public class TerrainShader extends ShaderProgram {
     }
 
     public void loadLevels(){
-        super.loadFloat(location_levels, LEVELS);
+        super.loadFloat(location_levels, RenderSettings.LEVELS);
     }
 
     public void loadLights(List<Light> lights){
-        for (int i = 0; i < MAX_LIGHTS; i++){
+        for (int i = 0; i < RenderSettings.MAX_LIGHTS; i++){
             if (i < lights.size()){
                 super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
                 super.loadVector(location_lightColor[i], lights.get(i).getColor());

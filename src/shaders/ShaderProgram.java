@@ -13,9 +13,6 @@ import org.lwjgl.util.vector.Vector4f;
 
 public abstract class ShaderProgram {
 
-	protected static final int MAX_LIGHTS = 4; // If changed, update terrain shaders and default shaders as well;
-	protected static final float LEVELS = 3f;
-
 	private int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;

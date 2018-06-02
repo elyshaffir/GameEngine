@@ -16,14 +16,9 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.GL42;
+import settings.WaterSettings;
 
 public class WaterFrameBuffers {
-
-	protected static final int REFLECTION_WIDTH = 320;
-	private static final int REFLECTION_HEIGHT = 180;
-	
-	protected static final int REFRACTION_WIDTH = 1280;
-	private static final int REFRACTION_HEIGHT = 720;
 
 	private int reflectionFrameBuffer;
 	private int reflectionTexture;
@@ -48,11 +43,11 @@ public class WaterFrameBuffers {
 	}
 
 	public void bindReflectionFrameBuffer() {//call before rendering to this FBO
-		bindFrameBuffer(reflectionFrameBuffer,REFLECTION_WIDTH,REFLECTION_HEIGHT);
+		bindFrameBuffer(reflectionFrameBuffer, WaterSettings.REFLECTION_WIDTH,WaterSettings.REFLECTION_HEIGHT);
 	}
 	
 	public void bindRefractionFrameBuffer() {//call before rendering to this FBO
-		bindFrameBuffer(refractionFrameBuffer,REFRACTION_WIDTH,REFRACTION_HEIGHT);
+		bindFrameBuffer(refractionFrameBuffer,WaterSettings.REFRACTION_WIDTH,WaterSettings.REFRACTION_HEIGHT);
 	}
 	
 	public void unbindCurrentFrameBuffer() {//call to switch to default frame buffer
@@ -74,15 +69,15 @@ public class WaterFrameBuffers {
 
 	private void initialiseReflectionFrameBuffer() {
 		reflectionFrameBuffer = createFrameBuffer();
-		reflectionTexture = createTextureAttachment(REFLECTION_WIDTH,REFLECTION_HEIGHT);
-		reflectionDepthBuffer = createDepthBufferAttachment(REFLECTION_WIDTH,REFLECTION_HEIGHT);
+		reflectionTexture = createTextureAttachment(WaterSettings.REFLECTION_WIDTH,WaterSettings.REFLECTION_HEIGHT);
+		reflectionDepthBuffer = createDepthBufferAttachment(WaterSettings.REFLECTION_WIDTH,WaterSettings.REFLECTION_HEIGHT);
 		unbindCurrentFrameBuffer();
 	}
 	
 	private void initialiseRefractionFrameBuffer() {
 		refractionFrameBuffer = createFrameBuffer();
-		refractionTexture = createTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
-		refractionDepthTexture = createDepthTextureAttachment(REFRACTION_WIDTH,REFRACTION_HEIGHT);
+		refractionTexture = createTextureAttachment(WaterSettings.REFRACTION_WIDTH,WaterSettings.REFRACTION_HEIGHT);
+		refractionDepthTexture = createDepthTextureAttachment(WaterSettings.REFRACTION_WIDTH,WaterSettings.REFRACTION_HEIGHT);
 		unbindCurrentFrameBuffer();
 	}
 	

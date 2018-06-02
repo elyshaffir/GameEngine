@@ -1,13 +1,12 @@
 package fontMeshCreator;
 
+import settings.GUISettings;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TextMeshCreator {
-
-	protected static final double LINE_HEIGHT = 0.03f;
-	protected static final int SPACE_ASCII = 32;
 
 	private MetaFile metaData;
 
@@ -28,7 +27,7 @@ public class TextMeshCreator {
 		Word currentWord = new Word(text.getFontSize());
 		for (char c : chars) {
 			int ascii = (int) c;
-			if (ascii == SPACE_ASCII) {
+			if (ascii == GUISettings.SPACE_ASCII) {
 				boolean added = currentLine.attemptToAddWord(currentWord);
 				if (!added) {
 					lines.add(currentLine);
@@ -75,7 +74,7 @@ public class TextMeshCreator {
 				curserX += metaData.getSpaceWidth() * text.getFontSize();
 			}
 			curserX = 0;
-			curserY += LINE_HEIGHT * text.getFontSize();
+			curserY += GUISettings.LINE_HEIGHT * text.getFontSize();
 		}		
 		return new TextMeshData(listToArray(vertices), listToArray(textureCoords));
 	}

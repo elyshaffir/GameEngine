@@ -1,6 +1,5 @@
 package cameras;
 
-import entities.Camera;
 import org.lwjgl.util.vector.Vector3f;
 
 public class StaticCamera extends Camera {

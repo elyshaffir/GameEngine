@@ -1,7 +1,6 @@
 package engineTester;
 
 import cameras.FreeCamera;
-import fontMeshCreator.GUIText;
 import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.RawModel;
@@ -14,13 +13,14 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.Entity;
-import entities.Light;
+import lights.Light;
 import postProcessing.Fbo;
 import postProcessing.PostProcessing;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import renderEngine.OBJLoader;
+import scenes.Scene;
 import terrain.Terrain;
 import textures.ModelTexture;
 import textures.TerrainTexture;
@@ -63,13 +63,9 @@ public class MainGameLoop {
 		guiRenderer = new GuiRenderer(loader);
 
 		// createGUIs();
-		createTerrain();
-		createWater();
-		createEntities();
-		createNormalMapEntities();
-		createLights();
+		Scene scene = createScene();
 
-		boolean renderSkybox = false;
+		boolean renderSkybox = true;
 		boolean colorOfHeights = terrainList.get(0).getBlendMap() == null;
 
 		Fbo fbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
@@ -82,20 +78,28 @@ public class MainGameLoop {
 			camera.move();
 			// carryAround.update();
 
-			renderer.renderShadowMap(entities, lights.get(0));
-			renderer.renderScene(camera, lights, entities, normalMapEntities, terrainList, waterTiles, fbo, renderSkybox, colorOfHeights);
-
+			renderer.renderScene(scene, fbo, renderSkybox, colorOfHeights);
 			PostProcessing.doPostProcessing(fbo.getColourTexture());
-
 			guiRenderer.render(guiTextureList);
+
 			DisplayManager.updateDisplay();			
 		}
+
 		PostProcessing.cleanUp();
 		fbo.cleanUp();
 		guiRenderer.cleanUp();
 		renderer.cleanUp();		
 		loader.cleanUp();
 		DisplayManager.closeDisplay();		
+	}
+
+	private static Scene createScene(){
+		createTerrain();
+		createWater();
+		createEntities();
+		createNormalMapEntities();
+		createLights();
+		return new Scene(camera, lights, lights.get(0), entities, normalMapEntities, terrainList, waterTiles);
 	}
 
 	private static void createTerrain(){
@@ -105,7 +109,7 @@ public class MainGameLoop {
 		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("terrain/lowest"));
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("terrain/raceblendMap"));
-		Terrain terrain = new Terrain(0, 0, loader, texturePack,"terrain/colorOfHeightTestHeightMap");
+		Terrain terrain = new Terrain(0, 0, loader, texturePack,blendMap); // replace heightmap for blendMap for randomness.
 		terrainList.add(terrain);
 		carryAround = new CarryAround(camera, renderer.getProjectionMatrix(), terrain, carryAroundEntities, carryAroundLights);
 	}

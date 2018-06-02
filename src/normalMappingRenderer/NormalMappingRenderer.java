@@ -10,12 +10,13 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
-import entities.Camera;
+import cameras.Camera;
 import entities.Entity;
-import entities.Light;
+import lights.Light;
 import models.RawModel;
 import models.TexturedModel;
 import renderEngine.MasterRenderer;
+import settings.RenderSettings;
 import textures.ModelTexture;
 import toolbox.Maths;
 
@@ -91,7 +92,7 @@ public class NormalMappingRenderer {
 	private void prepare(Vector4f clipPlane, List<Light> lights, Camera camera) {
 		shader.loadClipPlane(clipPlane);
 
-		shader.loadSkyColour(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE);
+		shader.loadSkyColour(RenderSettings.RED, RenderSettings.GREEN, RenderSettings.BLUE);
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
 		
 		shader.loadLights(lights, viewMatrix);

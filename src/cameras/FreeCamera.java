@@ -1,14 +1,13 @@
 package cameras;
 
-import entities.Camera;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
+import settings.CameraSettings;
 
 public class FreeCamera extends Camera{
 
-    private static final float MOVE_SPEED = 150;
     private int mouseButton = 0;
 
     private float currentSpeed;
@@ -42,29 +41,29 @@ public class FreeCamera extends Camera{
 
     private void checkMovementInput(){
         if (Keyboard.isKeyDown(Keyboard.KEY_W)){
-            currentSpeed = MOVE_SPEED;
+            currentSpeed = CameraSettings.MOVE_SPEED;
         }
         else if (Keyboard.isKeyDown(Keyboard.KEY_S)){
-            currentSpeed = -MOVE_SPEED;
+            currentSpeed = -CameraSettings.MOVE_SPEED;
         }
         else{
             currentSpeed = 0;
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_A)){
-            currentStrafeSpeed = MOVE_SPEED;
+            currentStrafeSpeed = CameraSettings.MOVE_SPEED;
         }
         else if (Keyboard.isKeyDown(Keyboard.KEY_D)){
-            currentStrafeSpeed = -MOVE_SPEED;
+            currentStrafeSpeed = -CameraSettings.MOVE_SPEED;
         }
         else{
             currentStrafeSpeed = 0;
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-            super.setPosition(new Vector3f(super.getPosition().x, super.getPosition().y + MOVE_SPEED / 100, super.getPosition().z));
+            super.setPosition(new Vector3f(super.getPosition().x, super.getPosition().y + CameraSettings.MOVE_SPEED / 100, super.getPosition().z));
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-            super.setPosition(new Vector3f(super.getPosition().x, super.getPosition().y - MOVE_SPEED / 100, super.getPosition().z));
+            super.setPosition(new Vector3f(super.getPosition().x, super.getPosition().y - CameraSettings.MOVE_SPEED / 100, super.getPosition().z));
 
     }
 

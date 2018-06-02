@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.lwjgl.opengl.Display;
+import settings.GUISettings;
 
 /**
  * Provides functionality for getting the values from a font file.
@@ -16,13 +17,6 @@ import org.lwjgl.opengl.Display;
  *
  */
 public class MetaFile {
-
-	private static final int PAD_TOP = 0;
-	private static final int PAD_LEFT = 1;
-	private static final int PAD_BOTTOM = 2;
-	private static final int PAD_RIGHT = 3;
-
-	private static final int DESIRED_PADDING = 3;
 
 	private static final String SPLITTER = " ";
 	private static final String NUMBER_SEPARATOR = ",";
@@ -150,8 +144,8 @@ public class MetaFile {
 	private void loadPaddingData() {
 		processNextLine();
 		this.padding = getValuesOfVariable("padding");
-		this.paddingWidth = padding[PAD_LEFT] + padding[PAD_RIGHT];
-		this.paddingHeight = padding[PAD_TOP] + padding[PAD_BOTTOM];
+		this.paddingWidth = padding[GUISettings.PAD_LEFT] + padding[GUISettings.PAD_RIGHT];
+		this.paddingHeight = padding[GUISettings.PAD_TOP] + padding[GUISettings.PAD_BOTTOM];
 	}
 
 	/**
@@ -162,7 +156,7 @@ public class MetaFile {
 	private void loadLineSizes() {
 		processNextLine();
 		int lineHeightPixels = getValueOfVariable("lineHeight") - paddingHeight;
-		verticalPerPixelSize = TextMeshCreator.LINE_HEIGHT / (double) lineHeightPixels;
+		verticalPerPixelSize = GUISettings.LINE_HEIGHT / (double) lineHeightPixels;
 		horizontalPerPixelSize = verticalPerPixelSize / aspectRatio;
 	}
 
@@ -195,20 +189,20 @@ public class MetaFile {
 	 */
 	private Character loadCharacter(int imageSize) {
 		int id = getValueOfVariable("id");
-		if (id == TextMeshCreator.SPACE_ASCII) {
+		if (id == GUISettings.SPACE_ASCII) {
 			this.spaceWidth = (getValueOfVariable("xadvance") - paddingWidth) * horizontalPerPixelSize;
 			return null;
 		}
-		double xTex = ((double) getValueOfVariable("x") + (padding[PAD_LEFT] - DESIRED_PADDING)) / imageSize;
-		double yTex = ((double) getValueOfVariable("y") + (padding[PAD_TOP] - DESIRED_PADDING)) / imageSize;
-		int width = getValueOfVariable("width") - (paddingWidth - (2 * DESIRED_PADDING));
-		int height = getValueOfVariable("height") - ((paddingHeight) - (2 * DESIRED_PADDING));
+		double xTex = ((double) getValueOfVariable("x") + (padding[GUISettings.PAD_LEFT] - GUISettings.DESIRED_PADDING)) / imageSize;
+		double yTex = ((double) getValueOfVariable("y") + (padding[GUISettings.PAD_TOP] - GUISettings.DESIRED_PADDING)) / imageSize;
+		int width = getValueOfVariable("width") - (paddingWidth - (2 * GUISettings.DESIRED_PADDING));
+		int height = getValueOfVariable("height") - ((paddingHeight) - (2 * GUISettings.DESIRED_PADDING));
 		double quadWidth = width * horizontalPerPixelSize;
 		double quadHeight = height * verticalPerPixelSize;
 		double xTexSize = (double) width / imageSize;
 		double yTexSize = (double) height / imageSize;
-		double xOff = (getValueOfVariable("xoffset") + padding[PAD_LEFT] - DESIRED_PADDING) * horizontalPerPixelSize;
-		double yOff = (getValueOfVariable("yoffset") + (padding[PAD_TOP] - DESIRED_PADDING)) * verticalPerPixelSize;
+		double xOff = (getValueOfVariable("xoffset") + padding[GUISettings.PAD_LEFT] - GUISettings.DESIRED_PADDING) * horizontalPerPixelSize;
+		double yOff = (getValueOfVariable("yoffset") + (padding[GUISettings.PAD_TOP] - GUISettings.DESIRED_PADDING)) * verticalPerPixelSize;
 		double xAdvance = (getValueOfVariable("xadvance") - paddingWidth) * horizontalPerPixelSize;
 		return new Character(id, xTex, yTex, xTexSize, yTexSize, xOff, yOff, quadWidth, quadHeight, xAdvance);
 	}

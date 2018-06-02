@@ -13,14 +13,13 @@ import org.lwjgl.util.vector.Vector3f;
 
 import models.RawModel;
 import renderEngine.Loader;
+import settings.FileSettings;
 
 public class NormalMappedObjLoader {
 
-	private static final String RES_LOC = "res/";
-
 	public static RawModel loadObjModel(String objFileName, Loader loader) {
 		FileReader isr = null;
-		File objFile = new File(RES_LOC + objFileName + ".obj");
+		File objFile = new File(FileSettings.RES_LOC + objFileName + ".obj");
 		try {
 			isr = new FileReader(objFile);
 		} catch (FileNotFoundException e) {

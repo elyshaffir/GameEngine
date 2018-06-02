@@ -1,6 +1,6 @@
 package skybox;
 
-import entities.Camera;
+import cameras.Camera;
 import models.RawModel;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -9,57 +9,52 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
-
-import java.util.Random;
+import settings.SkyboxSettings;
 
 public class SkyboxRenderer {
 
-    private static final float SIZE = 500f;
-    private static final float TIME_FACTOR = 10f;
-    private static final float DAY_LENGTH = .5f;
-
     private static final float[] VERTICES = {
-            -SIZE,  SIZE, -SIZE,
-            -SIZE, -SIZE, -SIZE,
-            SIZE, -SIZE, -SIZE,
-            SIZE, -SIZE, -SIZE,
-            SIZE,  SIZE, -SIZE,
-            -SIZE,  SIZE, -SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
 
-            -SIZE, -SIZE,  SIZE,
-            -SIZE, -SIZE, -SIZE,
-            -SIZE,  SIZE, -SIZE,
-            -SIZE,  SIZE, -SIZE,
-            -SIZE,  SIZE,  SIZE,
-            -SIZE, -SIZE,  SIZE,
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
 
-            SIZE, -SIZE, -SIZE,
-            SIZE, -SIZE,  SIZE,
-            SIZE,  SIZE,  SIZE,
-            SIZE,  SIZE,  SIZE,
-            SIZE,  SIZE, -SIZE,
-            SIZE, -SIZE, -SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
 
-            -SIZE, -SIZE,  SIZE,
-            -SIZE,  SIZE,  SIZE,
-            SIZE,  SIZE,  SIZE,
-            SIZE,  SIZE,  SIZE,
-            SIZE, -SIZE,  SIZE,
-            -SIZE, -SIZE,  SIZE,
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
 
-            -SIZE,  SIZE, -SIZE,
-            SIZE,  SIZE, -SIZE,
-            SIZE,  SIZE,  SIZE,
-            SIZE,  SIZE,  SIZE,
-            -SIZE,  SIZE,  SIZE,
-            -SIZE,  SIZE, -SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE,  SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
 
-            -SIZE, -SIZE, -SIZE,
-            -SIZE, -SIZE,  SIZE,
-            SIZE, -SIZE, -SIZE,
-            SIZE, -SIZE, -SIZE,
-            -SIZE, -SIZE,  SIZE,
-            SIZE, -SIZE,  SIZE
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,
+            -SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE,
+            SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE
     };
 
     private static String[] TEXTURE_FILES = {"skybox/right", "skybox/left", "skybox/top", "skybox/bottom", "skybox/back", "skybox/front"};
@@ -99,10 +94,10 @@ public class SkyboxRenderer {
 
     private float getCurrentTimeOfDay(){
 
-        float timeDifference = DisplayManager.getFrameTimeSeconds() / TIME_FACTOR;
-        if (time <= 0 - DAY_LENGTH)
+        float timeDifference = DisplayManager.getFrameTimeSeconds() / SkyboxSettings.TIME_FACTOR;
+        if (time <= 0 - SkyboxSettings.DAY_LENGTH)
             day = true;
-        else if (time >= 1 + DAY_LENGTH)
+        else if (time >= 1 + SkyboxSettings.DAY_LENGTH)
             day = false;
         if (day)
             time += timeDifference;
