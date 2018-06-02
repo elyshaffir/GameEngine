@@ -9,11 +9,12 @@ import settings.RenderSettings;
 import settings.SkyboxSettings;
 import shaders.ShaderProgram;
 import toolbox.Maths;
+import toolbox.GLSLFile;
 
 public class SkyboxShader extends ShaderProgram{
 
-	private static final String VERTEX_FILE = "/skybox/skyboxVertexShader.glsl";
-	private static final String FRAGMENT_FILE = "/skybox/skyboxFragmentShader.glsl";
+	private static final GLSLFile VERTEX_FILE = new GLSLFile("skybox/skyboxVertexShader");
+	private static final GLSLFile FRAGMENT_FILE = new GLSLFile("skybox/skyboxFragmentShader");
 
 	private int location_projectionMatrix;
 	private int location_viewMatrix;

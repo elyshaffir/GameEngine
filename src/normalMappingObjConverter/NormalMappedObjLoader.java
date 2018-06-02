@@ -1,9 +1,6 @@
 package normalMappingObjConverter;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,19 +10,17 @@ import org.lwjgl.util.vector.Vector3f;
 
 import models.RawModel;
 import renderEngine.Loader;
-import settings.FileSettings;
+import toolbox.OBJFile;
 
 public class NormalMappedObjLoader {
 
-	public static RawModel loadObjModel(String objFileName, Loader loader) {
-		FileReader isr = null;
-		File objFile = new File(FileSettings.RES_LOC + objFileName + ".obj");
+	public static RawModel loadObjModel(OBJFile file, Loader loader) {
+		BufferedReader reader = null;
 		try {
-			isr = new FileReader(objFile);
-		} catch (FileNotFoundException e) {
-			System.err.println("File not found in res; don't use any extention");
+			reader = file.getReader();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		BufferedReader reader = new BufferedReader(isr);
 		String line;
 		List<VertexNM> vertices = new ArrayList<>();
 		List<Vector2f> textures = new ArrayList<>();
@@ -84,7 +79,6 @@ public class NormalMappedObjLoader {
 		return loader.loadToVAO(verticesArray, texturesArray, normalsArray, tangentsArray, indicesArray);
 	}
 
-	//NEW 
 	private static void calculateTangents(VertexNM v0, VertexNM v1, VertexNM v2,
 			List<Vector2f> textures) {
 		Vector3f delatPos1 = Vector3f.sub(v1.getPosition(), v0.getPosition(), null);

@@ -10,6 +10,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import settings.SkyboxSettings;
+import toolbox.PNGFile;
 
 public class SkyboxRenderer {
 
@@ -57,8 +58,20 @@ public class SkyboxRenderer {
             SkyboxSettings.SIZE, -SkyboxSettings.SIZE,  SkyboxSettings.SIZE
     };
 
-    private static String[] TEXTURE_FILES = {"skybox/right", "skybox/left", "skybox/top", "skybox/bottom", "skybox/back", "skybox/front"};
-    private static String[] NIGHT_TEXTURE_FILES = {"skybox/nightRight", "skybox/nightLeft", "skybox/nightTop", "skybox/nightBottom", "skybox/nightBack", "skybox/nightFront"};
+    private static PNGFile[] TEXTURE_FILES = {
+            new PNGFile("skybox/right"),
+            new PNGFile("skybox/left"),
+            new PNGFile("skybox/top"),
+            new PNGFile("skybox/bottom"),
+            new PNGFile("skybox/back"),
+            new PNGFile("skybox/front")};
+    private static PNGFile[] NIGHT_TEXTURE_FILES = {
+            new PNGFile("skybox/nightRight"),
+            new PNGFile("skybox/nightLeft"),
+            new PNGFile("skybox/nightTop"),
+            new PNGFile("skybox/nightBottom"),
+            new PNGFile("skybox/nightBack"),
+            new PNGFile("skybox/nightFront")};
 
     private RawModel cube;
     private int textureID;

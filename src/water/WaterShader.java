@@ -5,11 +5,12 @@ import org.lwjgl.util.vector.Matrix4f;
 import shaders.ShaderProgram;
 import toolbox.Maths;
 import cameras.Camera;
+import toolbox.GLSLFile;
 
 public class WaterShader extends ShaderProgram {
 
-	private final static String VERTEX_FILE = "/water/waterVertex.glsl";
-	private final static String FRAGMENT_FILE = "/water/waterFragment.glsl";
+	private final static GLSLFile VERTEX_FILE = new GLSLFile("water/waterVertex");
+	private final static GLSLFile FRAGMENT_FILE = new GLSLFile("water/waterFragment");
 
 	private int location_modelMatrix;
 	private int location_viewMatrix;

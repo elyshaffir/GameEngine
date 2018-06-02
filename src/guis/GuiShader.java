@@ -2,12 +2,13 @@ package guis;
 
 import org.lwjgl.util.vector.Matrix4f;
 import shaders.ShaderProgram;
+import toolbox.GLSLFile;
 
 
 public class GuiShader extends ShaderProgram {
 
-    private static final String VERTEX_FILE = "/guis/guiVertexShader.glsl";
-    private static final String FRAGMENT_FILE = "/guis/guiFragmentShader.glsl";
+    private static final GLSLFile VERTEX_FILE = new GLSLFile("guis/guiVertexShader");
+    private static final GLSLFile FRAGMENT_FILE = new GLSLFile("guis/guiFragmentShader");
 
     private int location_transformationMatrix;
 

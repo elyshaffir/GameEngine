@@ -10,11 +10,12 @@ import org.lwjgl.util.vector.Vector4f;
 import lights.Light;
 import settings.RenderSettings;
 import shaders.ShaderProgram;
+import toolbox.GLSLFile;
 
 public class NormalMappingShader extends ShaderProgram{
 	
-	private static final String VERTEX_FILE = "/normalMappingRenderer/normalMapVShader.glsl";
-	private static final String FRAGMENT_FILE = "/normalMappingRenderer/normalMapFShader.glsl";
+	private static final GLSLFile VERTEX_FILE = new GLSLFile("normalMappingRenderer/normalMapVShader");
+	private static final GLSLFile FRAGMENT_FILE = new GLSLFile("normalMappingRenderer/normalMapFShader");
 	
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;

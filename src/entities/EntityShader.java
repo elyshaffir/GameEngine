@@ -10,13 +10,14 @@ import org.lwjgl.util.vector.Vector4f;
 import settings.RenderSettings;
 import shaders.ShaderProgram;
 import toolbox.Maths;
+import toolbox.GLSLFile;
 
 import java.util.List;
 
 public class EntityShader extends ShaderProgram {
 	
-	private static final String VERTEX_FILE = "/entities/entityVertexShader.glsl";
-	private static final String FRAGMENT_FILE = "/entities/entityFragmentShader.glsl";
+	private static final GLSLFile VERTEX_FILE = new GLSLFile("entities/entityVertexShader");
+	private static final GLSLFile FRAGMENT_FILE = new GLSLFile("entities/entityFragmentShader");
 	
 	private int location_transformationMatrix;
 	private int location_projecttionMatrix;

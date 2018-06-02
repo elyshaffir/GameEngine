@@ -18,11 +18,12 @@ import settings.WaterSettings;
 import toolbox.Maths;
 import cameras.Camera;
 import lights.Light;
+import toolbox.PNGFile;
 
 public class WaterRenderer {
 
-	private static final String DUDV_MAP = "water/waterDUDV";
-	private static final String NORMAL_MAP = "water/normalMap";
+	private static final PNGFile DUDV_MAP = new PNGFile("water/waterDUDV");
+	private static final PNGFile NORMAL_MAP = new PNGFile("water/normalMap");
 
 	private RawModel quad;
 	private WaterShader shader;

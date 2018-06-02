@@ -3,11 +3,12 @@ package shadows;
 import org.lwjgl.util.vector.Matrix4f;
 
 import shaders.ShaderProgram;
+import toolbox.GLSLFile;
 
 public class ShadowShader extends ShaderProgram {
 	
-	private static final String VERTEX_FILE = "/shadows/shadowVertexShader.glsl";
-	private static final String FRAGMENT_FILE = "/shadows/shadowFragmentShader.glsl";
+	private static final GLSLFile VERTEX_FILE = new GLSLFile("shadows/shadowVertexShader");
+	private static final GLSLFile FRAGMENT_FILE = new GLSLFile("shadows/shadowFragmentShader");
 
 	
 	private int location_mvpMatrix;
