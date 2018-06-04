@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import settings.SkyboxSettings;
-import toolbox.PNGFile;
+import fileSystem.PNGFile;
 
 public class SkyboxRenderer {
 

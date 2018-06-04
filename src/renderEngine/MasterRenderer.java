@@ -118,7 +118,13 @@ public class MasterRenderer {
 			}
 
 			Processor.processForWater(scene);
+			if (underWater)
+				renderSkybox = false;
+
 			renderScene(scene, clipPlaneReflection, renderSkybox, colorOfHeights);
+
+			if (underWater)
+				renderSkybox = true;
 
 			if (!underWater) {
 				scene.getCamera().getPosition().y += distance;

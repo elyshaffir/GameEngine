@@ -9,13 +9,14 @@ import org.lwjgl.util.vector.Vector4f;
 import settings.RenderSettings;
 import shaders.ShaderProgram;
 import toolbox.Maths;
+import fileSystem.GLSLFile;
 
 import java.util.List;
 
 public class TerrainShader extends ShaderProgram {
 
-    private static final String VERTEX_FILE = "/terrain/terrainVertexShader.glsl";
-    private static final String FRAGMENT_FILE = "/terrain/terrainFragmentShader.glsl";
+    private static final GLSLFile VERTEX_FILE = new GLSLFile("terrain/terrainVertexShader");
+    private static final GLSLFile FRAGMENT_FILE = new GLSLFile("terrain/terrainFragmentShader");
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;

@@ -66,6 +66,9 @@ public class PlayerCamera extends Camera{
     }
 
     public void move(Entity cameraEntity, boolean followPitch, boolean locked){
+
+        super.update();
+
         if (!locked){
             calculateZoom();
             calculatePitch();

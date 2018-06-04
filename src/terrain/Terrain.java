@@ -6,14 +6,13 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.Loader;
 import settings.TerrainSettings;
-import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
 import toolbox.Maths;
+import fileSystem.PNGFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class Terrain {
@@ -29,13 +28,13 @@ public class Terrain {
 
     private boolean colorOfHeights = false;
 
-    public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap, String heightMap) {
+    public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap, PNGFile heightMap) {
         this.x = gridX * TerrainSettings.SIZE;
         this.z = gridZ * TerrainSettings.SIZE;
         this.model = generateTerrain(loader, heightMap);
         this.texturePack = texturePack;
         this.blendMap = blendMap;
-        this.heightMap = new TerrainTexture(loader.loadTexture(heightMap));
+        this.heightMap = new TerrainTexture(loader.loadTexture(heightMap)); // FIXME!
     }
 
     public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap){
@@ -54,7 +53,7 @@ public class Terrain {
         this.colorOfHeights = true;
     }
 
-    public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, String heightMap){
+    public Terrain(int gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, PNGFile heightMap){
         this.x = gridX * TerrainSettings.SIZE;
         this.z = gridZ * TerrainSettings.SIZE;
         this.model = generateTerrain(loader, heightMap);
@@ -86,11 +85,11 @@ public class Terrain {
         return ret;
     }
 
-    private RawModel generateTerrain(Loader loader, String heightMap){
+    private RawModel generateTerrain(Loader loader, PNGFile heightMap){
 
         BufferedImage image = null;
         try {
-            image = ImageIO.read(new File("res/" + heightMap + ".png"));
+            image = ImageIO.read(heightMap.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }

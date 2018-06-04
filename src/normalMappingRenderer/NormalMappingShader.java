@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector4f;
 import lights.Light;
 import settings.RenderSettings;
 import shaders.ShaderProgram;
-import toolbox.GLSLFile;
+import fileSystem.GLSLFile;
 
 public class NormalMappingShader extends ShaderProgram{
 	

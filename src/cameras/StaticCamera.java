@@ -9,4 +9,8 @@ public class StaticCamera extends Camera {
         super.setYaw(yaw);
         super.setRoll(roll);
     }
+
+    public void update(){
+        super.update();
+    }
 }

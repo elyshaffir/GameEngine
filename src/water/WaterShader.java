@@ -5,7 +5,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import shaders.ShaderProgram;
 import toolbox.Maths;
 import cameras.Camera;
-import toolbox.GLSLFile;
+import fileSystem.GLSLFile;
 
 public class WaterShader extends ShaderProgram {
 

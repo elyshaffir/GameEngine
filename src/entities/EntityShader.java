@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector4f;
 import settings.RenderSettings;
 import shaders.ShaderProgram;
 import toolbox.Maths;
-import toolbox.GLSLFile;
+import fileSystem.GLSLFile;
 
 import java.util.List;
 

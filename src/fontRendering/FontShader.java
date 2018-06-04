@@ -3,11 +3,12 @@ package fontRendering;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import shaders.ShaderProgram;
+import fileSystem.GLSLFile;
 
 public class FontShader extends ShaderProgram{
 
-	private static final String VERTEX_FILE = "/fontRendering/fontVertex.glsl";
-	private static final String FRAGMENT_FILE = "/fontRendering/fontFragment.glsl";
+	private static final GLSLFile VERTEX_FILE = new GLSLFile("fontRendering/fontVertex");
+	private static final GLSLFile FRAGMENT_FILE = new GLSLFile("fontRendering/fontFragment");
 
 	private int location_color;
 	private int location_translation;

@@ -3,7 +3,6 @@ package renderEngine;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -17,6 +16,7 @@ import org.lwjgl.opengl.*;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import textures.TextureData;
+import fileSystem.PNGFile;
 
 public class Loader {
 
@@ -60,10 +60,10 @@ public class Loader {
 		return vaoID;
 	}
 
-	public int loadTexture(String filename){
+	public int loadTexture(PNGFile file){
 		Texture texture = null;
 		try{
-			texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + filename + ".png"));
+			texture = TextureLoader.getTexture("PNG", file.getInputStream());
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
 			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0);
@@ -94,12 +94,12 @@ public class Loader {
 		}
 	}
 
-	public int loadCubeMap(String[] textureFiles){
+	public int loadCubeMap(PNGFile[] textureFiles){
 		int texID = GL11.glGenTextures();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texID);
 		for (int i = 0; i < textureFiles.length; i++){
-			TextureData data = decodeTextureFile("res/" + textureFiles[i] + ".png");
+			TextureData data = decodeTextureFile(textureFiles[i]);
 			GL11.glTexImage2D(
 					GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
 					0,
@@ -117,22 +117,21 @@ public class Loader {
 		return texID;
 	}
 
-	private TextureData decodeTextureFile(String fileName) {
+	private TextureData decodeTextureFile(PNGFile file) {
 		int width = 0;
 		int height = 0;
 		ByteBuffer buffer = null;
 		try {
-			FileInputStream in = new FileInputStream(fileName);
-			PNGDecoder decoder = new PNGDecoder(in);
+			PNGDecoder decoder = new PNGDecoder(file.getInputStream());
 			width = decoder.getWidth();
 			height = decoder.getHeight();
 			buffer = ByteBuffer.allocateDirect(4 * width * height);
 			decoder.decode(buffer, width * 4, PNGDecoder.Format.RGBA);
 			buffer.flip();
-			in.close();
+			file.getInputStream().close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Tried to load texture " + fileName + ", didn't work");
+			System.err.println("Tried to load texture " + file + ", didn't work");
 			System.exit(-1);
 		}
 		return new TextureData(width, height, buffer);

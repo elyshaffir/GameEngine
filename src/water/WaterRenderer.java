@@ -18,7 +18,7 @@ import settings.WaterSettings;
 import toolbox.Maths;
 import cameras.Camera;
 import lights.Light;
-import toolbox.PNGFile;
+import fileSystem.PNGFile;
 
 public class WaterRenderer {
 

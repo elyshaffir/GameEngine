@@ -1,6 +1,9 @@
 package engineTester;
 
+import audio.AudioMaster;
+import audio.BackgroundMusic;
 import cameras.FreeCamera;
+import fileSystem.WAVFile;
 import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.RawModel;
@@ -26,6 +29,8 @@ import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
 import toolbox.CarryAround;
+import fileSystem.OBJFile;
+import fileSystem.PNGFile;
 import water.WaterTile;
 
 import java.util.ArrayList;
@@ -54,29 +59,33 @@ public class MainGameLoop {
 
 	private static FreeCamera camera = new FreeCamera(new Vector3f(100, 15, 100));
 
+	private static Fbo fbo;
+
 	public static void main(String[] args) {					
 		
 		DisplayManager.createDisplay("", false);
+
+		AudioMaster.init();
+		BackgroundMusic.init(new WAVFile("audio/bounce"), false);
 
 		loader = new Loader();
 		renderer = new MasterRenderer(loader, camera);
 		guiRenderer = new GuiRenderer(loader);
 
-		// createGUIs();
+		PostProcessing.init(loader);
+
 		Scene scene = createScene();
 
 		boolean renderSkybox = true;
 		boolean colorOfHeights = terrainList.get(0).getBlendMap() == null;
 
-		Fbo fbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
-		PostProcessing.init(loader);
+		fbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_RENDER_BUFFER);
 
 		while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
 
 			dragon.increaseRotation(0, 1, 0);
 
 			camera.move();
-			// carryAround.update();
 
 			renderer.renderScene(scene, fbo, renderSkybox, colorOfHeights);
 			PostProcessing.doPostProcessing(fbo.getColourTexture());
@@ -85,12 +94,18 @@ public class MainGameLoop {
 			DisplayManager.updateDisplay();			
 		}
 
+		cleanUp();
+		DisplayManager.closeDisplay();		
+	}
+
+	private static void cleanUp(){
 		PostProcessing.cleanUp();
 		fbo.cleanUp();
 		guiRenderer.cleanUp();
-		renderer.cleanUp();		
+		renderer.cleanUp();
 		loader.cleanUp();
-		DisplayManager.closeDisplay();		
+		BackgroundMusic.cleanUp();
+		AudioMaster.cleanUp();
 	}
 
 	private static Scene createScene(){
@@ -103,13 +118,13 @@ public class MainGameLoop {
 	}
 
 	private static void createTerrain(){
-		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("terrain/grassy2"));
-		TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("terrain/highest"));
-		TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("terrain/rockTerrain"));
-		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("terrain/lowest"));
+		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture(new PNGFile("terrain/grassy2")));
+		TerrainTexture rTexture = new TerrainTexture(loader.loadTexture(new PNGFile("terrain/highest")));
+		TerrainTexture gTexture = new TerrainTexture(loader.loadTexture(new PNGFile("terrain/rockTerrain")));
+		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture(new PNGFile("terrain/lowest")));
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
-		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("terrain/raceblendMap"));
-		Terrain terrain = new Terrain(0, 0, loader, texturePack,blendMap); // replace heightmap for blendMap for randomness.
+		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture(new PNGFile("terrain/raceblendMap")));
+		Terrain terrain = new Terrain(0, 0, loader, texturePack, new PNGFile("terrain/colorOfHeightTestHeightMap")); // replace heightmap for blendMap for randomness.
 		terrainList.add(terrain);
 		carryAround = new CarryAround(camera, renderer.getProjectionMatrix(), terrain, carryAroundEntities, carryAroundLights);
 	}
@@ -125,8 +140,8 @@ public class MainGameLoop {
 	}
 
 	private static void createEntities(){
-		RawModel dragonModel = OBJLoader.loadObjModel("models/dragon", loader);
-		TexturedModel dragonStaticModel = new TexturedModel(dragonModel, new ModelTexture(loader.loadTexture("textures/blankTexture")));
+		RawModel dragonModel = OBJLoader.loadObjModel(new OBJFile("models/dragon"), loader);
+		TexturedModel dragonStaticModel = new TexturedModel(dragonModel, new ModelTexture(loader.loadTexture(new PNGFile("textures/blankTexture"))));
 		ModelTexture texture = dragonStaticModel.getTexture();
 		texture.setShineDamper(10);
 		texture.setReflectivity(10);
@@ -136,9 +151,9 @@ public class MainGameLoop {
 	}
 
 	private static void createNormalMapEntities(){
-		RawModel barrelModel = NormalMappedObjLoader.loadObjModel("models/barrel", loader);
-		TexturedModel barrelStaticModel = new TexturedModel(barrelModel, new ModelTexture(loader.loadTexture("textures/barrel")));
-		barrelStaticModel.getTexture().setNormalID(loader.loadTexture("normalMaps/barrelNormal"));
+		RawModel barrelModel = NormalMappedObjLoader.loadObjModel(new OBJFile("models/barrel"), loader);
+		TexturedModel barrelStaticModel = new TexturedModel(barrelModel, new ModelTexture(loader.loadTexture(new PNGFile("textures/barrel"))));
+		barrelStaticModel.getTexture().setNormalID(loader.loadTexture(new PNGFile("normalMaps/barrelNormal")));
 		ModelTexture texture = barrelStaticModel.getTexture();
 		texture.setShineDamper(10);
 		texture.setReflectivity(.5f);

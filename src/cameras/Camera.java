@@ -1,5 +1,6 @@
 package cameras;
 
+import audio.AudioMaster;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Camera {
@@ -55,5 +56,9 @@ public class Camera {
             this.roll -= 360;
         if (this.roll < 0)
             this.roll = 360 + this.roll;
+    }
+
+    protected void update(){
+        // AudioMaster.setListenerData(position);
     }
 }

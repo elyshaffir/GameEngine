@@ -1,11 +1,12 @@
 package postProcessing;
 
 import shaders.ShaderProgram;
+import fileSystem.GLSLFile;
 
 public class ContrastShader extends ShaderProgram {
 
-	private static final String VERTEX_FILE = "/postProcessing/postProcessingVertex.glsl";
-	private static final String FRAGMENT_FILE = "/postProcessing/contrastFragment.glsl";
+	private static final GLSLFile VERTEX_FILE = new GLSLFile("postProcessing/postProcessingVertex");
+	private static final GLSLFile FRAGMENT_FILE = new GLSLFile("postProcessing/contrastFragment");
 
 	private int location_contrast;
 	

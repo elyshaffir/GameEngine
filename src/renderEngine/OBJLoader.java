@@ -1,9 +1,6 @@
 package renderEngine;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,18 +9,17 @@ import models.RawModel;
 
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import fileSystem.OBJFile;
 
 public class OBJLoader {
-	
-	public static RawModel loadObjModel(String fileName, Loader loader){
-		FileReader fr = null;
-		try{
-			fr = new FileReader(new File("res/" + fileName + ".obj"));	
-		} catch (FileNotFoundException e){
-			System.err.println("Couldn't load file!");
+
+	public static RawModel loadObjModel(OBJFile file, Loader loader){
+		BufferedReader reader = null;
+		try {
+			reader = file.getReader();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		BufferedReader reader = new BufferedReader(fr);
 		String line;
 		List<Vector3f> vertices = new ArrayList<Vector3f>();
 		List<Vector2f> textures = new ArrayList<Vector2f>();
@@ -32,8 +28,8 @@ public class OBJLoader {
 		float[] verticesArray = null;
 		float[] normalsArray = null;
 		float[] textureArray = null;
-		int[] indicesArray = null;		
-		try{			
+		int[] indicesArray = null;
+		try{
 			while (true){
 				line = reader.readLine();
 				String[] currentLine = line.split(" ");
@@ -52,9 +48,9 @@ public class OBJLoader {
 					textureArray = new float[vertices.size() * 2];
 					normalsArray = new float[vertices.size() * 3];
 					break;
-				}				
+				}
 			}
-			
+
 			while (line != null){
 				if (!line.startsWith("f ")){
 					line = reader.readLine();
@@ -69,30 +65,30 @@ public class OBJLoader {
 				proccessVertex(vertex3, indices, textures, normals, textureArray, normalsArray);
 				line = reader.readLine();
 			}
-			
+
 		} catch(Exception e){
 			e.printStackTrace();
 		}
-		
+
 		verticesArray = new float[vertices.size() * 3];
 		indicesArray = new int[indices.size()];
-		
+
 		int vertexPointer = 0;
 		for (Vector3f vertex:vertices){
 			verticesArray[vertexPointer++] = vertex.x;
 			verticesArray[vertexPointer++] = vertex.y;
 			verticesArray[vertexPointer++] = vertex.z;
 		}
-		
+
 		for (int i = 0; i < indices.size(); i++){
 			indicesArray[i] = indices.get(i);
 		}
-		
+
 		try {
 			reader.close();
 		} catch (IOException e) {}
 		return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray);
-		
+
 	}
 	
 	private static void proccessVertex(String[] vertexData, List<Integer> indices,

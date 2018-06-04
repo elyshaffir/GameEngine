@@ -88,5 +88,7 @@ public class FreeCamera extends Camera{
 
         super.setPosition(new Vector3f(super.getPosition().x + dx, super.getPosition().y, super.getPosition().z + dz));
         super.setPosition(new Vector3f(super.getPosition().x + strafeDx, super.getPosition().y, super.getPosition().z + strafeDz));
+
+        super.update();
     }
 }

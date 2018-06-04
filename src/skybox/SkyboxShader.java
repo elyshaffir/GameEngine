@@ -9,7 +9,7 @@ import settings.RenderSettings;
 import settings.SkyboxSettings;
 import shaders.ShaderProgram;
 import toolbox.Maths;
-import toolbox.GLSLFile;
+import fileSystem.GLSLFile;
 
 public class SkyboxShader extends ShaderProgram{
 
