@@ -1,5 +1,6 @@
 package renderEngine;
 
+import animations.animatedModel.AnimatedModel;
 import entities.Entity;
 import models.TexturedModel;
 import scenes.Scene;
@@ -16,16 +17,18 @@ class Processor {
     static Map<TexturedModel, List<Entity>> normalMapEntities = new HashMap<>();
     static List<Terrain> terrains = new ArrayList<>();
     static List<WaterTile> waterTiles = new ArrayList<>();
+    static List<AnimatedModel> animatedEntities = new ArrayList<>();
 
-    private static void processAll(List<WaterTile> waterTileList, List<Terrain> terrainList, List<Entity> entityList, List<Entity> normalMapEntityList){
+    private static void processAll(List<WaterTile> waterTileList, List<Terrain> terrainList, List<Entity> entityList, List<Entity> normalMapEntityList, List<AnimatedModel> animatedModelList){
         processWaters(waterTileList);
         processTerrains(terrainList);
         processEntities(entityList);
+        processAnimatedEntities(animatedModelList);
         processNormalMapEntities(normalMapEntityList);
     }
 
     static void processScene(Scene scene){
-        processAll(scene.getWaterTileList(), scene.getTerrainList(), scene.getEntityList(), scene.getNormalMapEntityList());
+        processAll(scene.getWaterTileList(), scene.getTerrainList(), scene.getEntityList(), scene.getNormalMapEntityList(), scene.getAnimatedEntities());
     }
 
     private static void processForWater(List<Terrain> terrainList, List<Entity> entityList, List<Entity> normalMapEntityList){
@@ -50,6 +53,7 @@ class Processor {
         waterTiles.clear();
         terrains.clear();
         entities.clear();
+        animatedEntities.clear();
         normalMapEntities.clear();
     }
 
@@ -97,9 +101,18 @@ class Processor {
         }
     }
 
+    private static void processAnimatedEntity(AnimatedModel entity){
+        animatedEntities.add(entity);
+    }
+
     private static void processEntities(List<Entity> entities){
         for (Entity entity:entities)
             processEntity(entity);
+    }
+
+    private static void processAnimatedEntities(List<AnimatedModel> animatedEntities){
+        for (AnimatedModel entity:animatedEntities)
+            processAnimatedEntity(entity);
     }
 
     private static void processNormalMapEntities(List<Entity> entities){

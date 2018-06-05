@@ -2,6 +2,7 @@ package renderEngine;
 
 import java.util.List;
 
+import animations.renderer.AnimatedModelRenderer;
 import cameras.Camera;
 import entities.Entity;
 import entities.EntityRenderer;
@@ -13,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import postProcessing.Fbo;
 import entities.EntityShader;
@@ -32,6 +34,8 @@ public class MasterRenderer {
 	private EntityShader entityShader = new EntityShader();
 	private EntityRenderer entityRenderer;
 
+	private AnimatedModelRenderer animatedModelRenderer;
+
 	private TerrainRenderer terrainRenderer;
 	private TerrainShader terrainShader = new TerrainShader();
 
@@ -49,6 +53,7 @@ public class MasterRenderer {
 		enableCulling();
 		createProjectionMatrix();
 		entityRenderer = new EntityRenderer(entityShader, projectionMatrix);
+		animatedModelRenderer = new AnimatedModelRenderer();
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
 		waterRenderer = new WaterRenderer(loader, waterShader, projectionMatrix, waterFrameBuffers);
@@ -74,6 +79,8 @@ public class MasterRenderer {
 		entityShader.stop();
 
 		normalMappingRenderer.render(Processor.normalMapEntities, clipPlane, lights, camera);
+
+		animatedModelRenderer.render(Processor.animatedEntities, camera, new Vector3f(0.2f, -0.3f, -0.8f), projectionMatrix);
 
 		terrainShader.start();
 		TerrainVariableLoader.loadVariables(terrainShader, colorOfHeights, clipPlane, lights, camera);
@@ -158,6 +165,7 @@ public class MasterRenderer {
 
 	public void cleanUp(){
 		entityShader.cleanUp();
+		animatedModelRenderer.cleanUp();
 		terrainShader.cleanUp();
 		waterShader.cleanUp();
 		normalMappingRenderer.cleanUp();
@@ -196,7 +204,7 @@ public class MasterRenderer {
 	}
 
 	public void renderScene(Scene scene, Fbo fbo, boolean renderSkybox, boolean colorOfHeights){
-		renderShadowMap(scene);
+		renderShadowMap(scene); // FIXME: Add animatedModels
 		prepareWaterProcessing(scene, renderSkybox, colorOfHeights);
 
 		fbo.bindFrameBuffer();

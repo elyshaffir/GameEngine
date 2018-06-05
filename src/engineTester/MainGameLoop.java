@@ -1,8 +1,15 @@
 package engineTester;
 
+import animations.animatedModel.AnimatedModel;
+import animations.animation.Animation;
+import animations.loading.AnimatedModelLoader;
+import animations.loading.AnimationLoader;
+import animations.renderingData.AnimatedMesh;
+import animations.renderingData.Texture;
 import audio.AudioMaster;
 import audio.BackgroundMusic;
 import cameras.FreeCamera;
+import fileSystem.DAEFile;
 import fileSystem.WAVFile;
 import guis.GuiRenderer;
 import guis.GuiTexture;
@@ -46,6 +53,7 @@ public class MainGameLoop {
 	private static List<Entity> entities = new ArrayList<>();
 	private static List<Entity> normalMapEntities = new ArrayList<>();
 	private static List<Entity> carryAroundEntities = new ArrayList<>();
+	private static List<AnimatedModel> animatedEntities = new ArrayList<>();
 
 	private static Loader loader;
 	private static MasterRenderer renderer;
@@ -54,6 +62,8 @@ public class MainGameLoop {
 	private static Entity dragon;
 
 	private static Entity barrel;
+
+	private static AnimatedModel animatedEntity;
 
 	private static CarryAround carryAround;
 
@@ -85,6 +95,8 @@ public class MainGameLoop {
 
 			dragon.increaseRotation(0, 1, 0);
 
+			animatedEntity.update();
+
 			camera.move();
 
 			renderer.renderScene(scene, fbo, renderSkybox, colorOfHeights);
@@ -93,12 +105,12 @@ public class MainGameLoop {
 
 			DisplayManager.updateDisplay();			
 		}
-
 		cleanUp();
 		DisplayManager.closeDisplay();		
 	}
 
 	private static void cleanUp(){
+		animatedEntity.delete();
 		PostProcessing.cleanUp();
 		fbo.cleanUp();
 		guiRenderer.cleanUp();
@@ -113,8 +125,17 @@ public class MainGameLoop {
 		createWater();
 		createEntities();
 		createNormalMapEntities();
+		createAnimatedEntities();
 		createLights();
-		return new Scene(camera, lights, lights.get(0), entities, normalMapEntities, terrainList, waterTiles);
+		return new Scene(camera, lights, lights.get(0), entities, normalMapEntities, animatedEntities, terrainList, waterTiles);
+	}
+
+	private static void createAnimatedEntities(){
+		animatedEntity  = AnimatedModelLoader.loadEntity(new DAEFile("models/player"),
+				new PNGFile("textures/playerTexture"));
+		Animation animation = AnimationLoader.loadAnimation(new DAEFile("models/player"));
+		animatedEntity.doAnimation(animation);
+		animatedEntities.add(animatedEntity);
 	}
 
 	private static void createTerrain(){
